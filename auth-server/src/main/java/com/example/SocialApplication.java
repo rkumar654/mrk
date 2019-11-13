@@ -45,6 +45,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableOAuth2Client;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -65,7 +66,17 @@ public class SocialApplication extends WebSecurityConfigurerAdapter {
 	@RequestMapping({ "/user", "/me" })
 	public Map<String, String> user(Principal principal) {
 		Map<String, String> map = new LinkedHashMap<>();
-		map.put("name", principal.getName());
+		map.put("loginId", principal.getName());
+		map.put("name",principal.getClass().toString());
+		if(principal instanceof OAuth2Authentication) {
+			map.put("name1",((OAuth2Authentication) principal).getAuthorities().toString());
+			map.put("other",((OAuth2Authentication) principal).getCredentials().toString());
+			map.put("other1",((OAuth2Authentication) principal).getDetails().toString());
+			map.put("other2",((OAuth2Authentication) principal).getUserAuthentication().toString());
+			map.put("other3",((OAuth2Authentication) principal).getOAuth2Request().toString());
+			map.put("other4",((OAuth2Authentication) principal).getName().toString());
+			map.put("other5",((OAuth2Authentication) principal).toString());
+		}
 		return map;
 	}
 
